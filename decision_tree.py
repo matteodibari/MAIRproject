@@ -1,6 +1,7 @@
 # This is a sample Python script.
 
 import numpy as np
+import joblib as jl
 
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
@@ -94,6 +95,9 @@ def predict_new(clf, vectorizer, label_binarizer):
     print(pred_m)
     print(f"Predict accuracy: {metrics.accuracy_score(labels_new_message, pred_m)}")
 
+# export the pkl file
+def export_model(clf):
+    jl.dump(clf, 'DTC.pkl')
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
