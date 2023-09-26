@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+from generate_response import generate_response
 
 root = Tk()
 root.title("Chatbot")
@@ -16,10 +17,9 @@ send_button.pack()
 def send_message():
   user_input = input_field.get()
   input_field.delete(0, END)
-  response = 'chatbot_response(user_input)'
+  response = generate_response(user_input)
   text_area.insert(END, f"User: {user_input}\n")
   text_area.insert(END, f"Chatbot: {response}\n")
 
 root.bind('<Return>', lambda event=None: send_button.invoke())
-
 root.mainloop()
