@@ -5,6 +5,13 @@ from sklearn import model_selection
 
 words = None
 
+
+def to_one_hot(vector):
+    hot = list(vector).index(max(vector))
+    arr = np.zeros(len(vector))
+    arr[hot] = 1
+    return arr
+
 def sentence_to_vector(sentence):
     array = np.zeros(29)
     if 'bye' in sentence:
@@ -167,6 +174,10 @@ def train_model():
     x_train, x_test, y_train, y_test = get_data()
     words = bag_of_words(x_train)
 
+    # with open('bag_of_words.txt', 'w') as f:
+    #     for word in words:
+    #         f.write(str(word) + '\n')
+
     x_train_vectors = list()
     for i in range(len(x_train)):
         x_train_vectors.append(sentence_to_vector_2(x_train[i], words))
@@ -203,7 +214,10 @@ def train_model():
     y_test_vectors = np.array(y_test_vectors)
 
     print(model.evaluate(x_test_vectors, y_test_vectors))
+    # model.save('saved_model.h5', overwrite=True)
 
-    model.save('saved_model.h5', overwrite=True)
+    # y = model.predict( np.array( [sentence_to_vector_2('goodbye', words)] ))
+    # y = to_one_hot(y[0])
+    # print(y)
+    # print(vector_to_label(y))
 
-    
