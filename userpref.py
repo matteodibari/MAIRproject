@@ -62,11 +62,9 @@ def getUserPref(sentence):
     allPref.append(compareSets(locationTypes, sentence))
     allPref.append(compareSets(restaurantTypes, sentence))
     if allPref[0] is None:
-        print('one')
         if compareSets(dontCarePrice, sentence) is not None:
             allPref[0] = "any"
     if allPref[1] is None:
-        print('two')
         if compareSets(dontCareLoc, sentence) is not None:
             allPref[1] = "any"
     if allPref[2] is None:
@@ -89,7 +87,12 @@ if '"area"' in ['"restaurantname"', '"pricerange"', '"area"', '"food"', '"phone"
 #if ('\"' + pref + '\"') in ['"pizza express fen ditton"', '"moderate"', '"centre"', '"european"', '""', '"jesus lane fen ditton"', '""']:
 
 def recommend(allPref):
-    print(allPref)
+    matchesNeeded = 3
+    userPref = []
+    for pref in allPref:
+        if pref == 'any' or pref is None:
+            matchesNeeded = matchesNeeded - 1
+
     with open('restaurant_info.csv', newline='') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='\"')
 
@@ -101,8 +104,22 @@ def recommend(allPref):
                 if pref in row:
                     #print('hi')
                     score = score + 1
-            if score == 3:
-                print('yes')
-                print(row)
-recommend(getUserPref(sentense1))
-#recommend(sentense3)
+            if score == matchesNeeded:
+
+                userPref.append(row[0])
+                for i in range(3):
+                    if allPref[i] == 'any':
+                        userPref.append('any')
+                    elif allPref[i] is None:
+                        userPref.append("unknown")
+                    else:
+                        userPref.append(row[i + 1])
+    return userPref
+
+
+print(recommend(getUserPref(sentense1)))
+print(recommend(getUserPref(sentense4)))
+pref = recommend(getUserPref(sentense1))
+print('The perfect restaurant is ' + pref[0] + ' with ' + pref[1] + ' price range which is located in ' + pref [2] + ' part of the town and serve ' + pref[3] + ' food')
+pref = recommend(getUserPref(sentense4))
+print('The perfect restaurant is ' + pref[0] + ' with ' + pref[1] + ' price range which is located in ' + pref [2] + ' part of the town and serve ' + pref[3] + ' food')
