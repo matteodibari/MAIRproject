@@ -11,7 +11,7 @@ from userpref import checkDontCare
 
 curr_state = 1
 
-#stored-data = [price-range, area, type]
+#stored-preferences = [price-range, area, type]
 stored_preferences = [None, None, None]
 
 ask_area = ['In which area are you searching for the restaurant?']
@@ -170,6 +170,7 @@ while(1):
                 print(bye[0])
                 exit()
 
+            #this is the same as going to state 1 but without the extra input from the user
             if stored_preferences[1] == None: 
                 print(ask_area[0])
                 curr_state = 2
