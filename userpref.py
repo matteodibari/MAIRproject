@@ -89,6 +89,14 @@ def getUserPref(sentence):
             allPref[2] = "any"
     return allPref
 
+def checkDontCare(sentence):
+    sentence = sentence.replace(" ", "")
+    sentence = sentence.lower()
+    if compareSets(['dontcare', 'doesntmatter', 'doesnotmatter', 'donotcare', 'nopreference'], sentence):
+        return True
+    else: 
+        return False
+
 def getUserRequest(sentence):
     sentence = sentence.replace(" ", "")
     sentence = sentence.lower()
@@ -117,6 +125,8 @@ def recommend(allPref, already_recommended, all=False):
                 if pref in row:
                     score = score + 1
                 if pref == 'asian oriental' and 'asian' in row:
+                    score = score + 1
+                if pref == None:
                     score = score + 1
             if score == matchesNeeded and row not in already_recommended[:]:            
                 userPref.append(row[0])

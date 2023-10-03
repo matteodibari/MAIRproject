@@ -6,6 +6,7 @@ from model_feed_forward import to_one_hot
 from userpref import getUserPref
 from userpref import recommend
 from userpref import getUserRequest
+from userpref import checkDontCare
 
 
 curr_state = 1
@@ -49,7 +50,16 @@ already_recommended = []
 while(1):
     user_input = input()
     dialog_act = predict_dialog_act(user_input)
+    
     print(dialog_act)
+    if dialog_act == 'restart':
+        print('System restarting...')
+        stored_preferences = [None, None, None]
+        already_recommended = []
+        print('Hello , welcome to the Cambridge restaurant system? You can ask for restaurants by area , price range or food type . How may I help you?')
+        curr_state = 1
+        continue
+
     preferences_changed = False
 
     #clearing the preferences if we entered in state 5
@@ -90,6 +100,9 @@ while(1):
                     print_apologies()
         case 2:
             
+            if checkDontCare(user_input):
+                stored_preferences[1] = 'any'
+
             if dialog_act == 'None':
                 curr_state = 2
                 continue
@@ -109,6 +122,9 @@ while(1):
                     print_apologies()
 
         case 3:
+
+            if checkDontCare(user_input):
+                stored_preferences[2] = 'any'
             
             if dialog_act == 'None':
                 curr_state = 3
