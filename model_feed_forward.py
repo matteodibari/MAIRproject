@@ -5,76 +5,28 @@ from sklearn import model_selection
 
 words = None
 
+def to_one_hot(array):
+    """
+    This function takes an array and returns its "one-hot" version
+    using the position of its highest element.
 
-def to_one_hot(vector):
-    hot = list(vector).index(max(vector))
-    arr = np.zeros(len(vector))
-    arr[hot] = 1
-    return arr
+    :param array: sentence to use for the prediction.
+    :return result: resulting one-hot array.
+    """
 
-def sentence_to_vector(sentence):
-    array = np.zeros(29)
-    if 'bye' in sentence:
-        array[0] = 1
-    if 'goodbye' in sentence:
-        array[1] = 1
-    if 'yes' in sentence:
-        array[2] = 1
-    if 'right' in sentence:
-        array[3] = 1
-    if 'confirm' in sentence:
-        array[4] = 1
-    if 'no ' in sentence:
-        array[5] = 1
-    if sentence == 'not':
-        array[6] = 1
-    if 'hi ' in sentence:
-        array[7] = 1
-    if 'hello' in sentence:
-        array[8] = 1
-    if 'more' in sentence:
-        array[9] = 1
-    if 'how about' in sentence:
-        array[10] = 1
-    if 'anything else' in sentence:
-        array[11] = 1
-    if 'start over' in sentence:
-        array[12] = 1
-    if 'repeat' in sentence:
-        array[13] = 1
-    if 'reset' in sentence:
-        array[14] = 1
-    if 'thank' in sentence:
-        array[15] = 1
-    if 'dont want' in sentence:
-        array[16] = 1
-    if 'wrong' in sentence:
-        array[17] = 1
-    if sentence == 'cough':
-        array[18] = 1
-    if sentence == 'unintelligible':
-        array[19] = 1
-    if sentence == 'sil':
-        array[20] = 1
-    if 'is it ' in sentence:
-        array[21] = 1
-    if 'does it ' in sentence:
-        array[22] = 1
-    if 'what' in sentence:
-        array[23] = 1
-    if 'which' in sentence:
-        array[24] = 1
-    if 'when' in sentence:
-        array[25] = 1
-    if 'phone' in sentence:
-        array[26] = 1
-    if 'address' in sentence:
-        array[27] = 1
-    if 'price' in sentence:
-        array[28] = 1
-    return array
+    max_index = list(array).index(max(array))
+    result = np.zeros(len(array))
+    result[max_index] = 1
+    return result
 
 def label_to_vector(label):
+    """
+    This function returns the vectorised version of a label.
+
+    :param label: label to vectorize.
+    :return array: resulting vector.
+    """
+
     array = np.zeros(15)
     match label:
         case 'ack':
@@ -110,6 +62,13 @@ def label_to_vector(label):
     return array
 
 def vector_to_label(array):
+    """
+    This function, given a one-hot array, returns its respective label.
+
+    :param array: one-hot array.
+    :return label: resulting label.
+    """
+
     if array[0]:
         label = 'ack'
     if array[1]:
@@ -143,8 +102,14 @@ def vector_to_label(array):
     return label
 
 def bag_of_words(data):
-    # Use once, returns an array with all words used by the model
-    # data = np.array(data, dtype='O')
+    """
+    This function takes an array of strings and return a list containing the words
+    that show up at least 2 times in total.
+
+    :param data: array of strings.
+    :return: bag of words.
+    """
+
     data = [string.split() for string in data]
     data = [word for sent in data for word in sent]
     
@@ -152,16 +117,30 @@ def bag_of_words(data):
     bagofwords = {word:count for word, count in bagofwords.items() if count >= 2}
     return list(bagofwords.keys())
 
-def sentence_to_vector_2(sentence, words):
-    # generate list of words:
-    array = np.zeros(len(words))
+def sentence_to_vector_2(sentence, bag_of_words):
+    """
+    This function vectorizes a sentence using a bag of words.
+
+    :param sentence: sentence to vectorize.
+    :param bag_of_words: bag of words to use for the vectorization.
+    :return array: resulting vectorized version. .
+    """
+
+    array = np.zeros(len(bag_of_words))
     for word in sentence:
-        # check if 
-        if word in words:
-            array[words.index(word)] = 1
+        if word in bag_of_words:
+            array[bag_of_words.index(word)] = 1
     return array
 
 def get_data():
+    """
+    This function takes all the given data, shuffles it, and divides it in 2 parts:
+    the first 85% for the training set and the remaining 15% for the test set.
+
+    :return (x_train, y_train, x_test, y_train): Returns respectively the training input,
+    the training output, the test input and the test output. 
+    """
+
     datContent = [i.strip().split(' ', 1) for i in open("./dialog_acts.dat").readlines()]
     np.random.shuffle(datContent)
     array = np.array(datContent)
@@ -169,6 +148,10 @@ def get_data():
     return x_train, x_test, y_train, y_test
 
 def train_model():
+    """
+    This function uses the data and the bag of words to train and subsequently test 
+    a keras model.
+    """
     global words
 
     x_train, x_test, y_train, y_test = get_data()
