@@ -10,25 +10,36 @@ from userpref import checkDontCare
 
 
 curr_state = 1
+#this variable keeps track of the current state during the state transitioning algorithm
 
-#stored-preferences = [price-range, area, type]
 stored_preferences = [None, None, None]
+#stored-preferences = [price-range, area, type]
 
 ask_area = ['In which area are you searching for the restaurant?']
 ask_type = ['Which type of food are you searching for?']
 bye = ['Bye man!']
 error = ['Sorry, I did not understand what you meant.']
 
-
-print('Hello , welcome to the Cambridge restaurant system? You can ask for restaurants by area , price range or food type . How may I help you?')
-
 def print_restaurant(restaurant_info):
+    """
+    This function prints the suggestion given the information of a restaurant
+
+    :param restaurant_info: Information of the restaurant
+    """
+    
     print('The perfect restaurant is ' + restaurant_info[0] + ' with ' + restaurant_info[1] + 
                           ' price range which is located in ' + restaurant_info [2] + ' part of the town and serve ' 
                           + restaurant_info[3] + ' food')
     return
 
 def predict_dialog_act(input_msg):
+    """
+    This function uses a pretrained model to predict the dialog act
+    given a sentence.
+
+    :param input_msg: sentence to use for the prediction.
+    """
+
     model = load_model('saved_model.h5')
     words = None
     with open('bag_of_words.txt', 'r') as f:
@@ -40,12 +51,17 @@ def predict_dialog_act(input_msg):
     return vector_to_label(y)
 
 def print_apologies():
+    """
+    This function prints the apologies given the current user preferences.
+    """
+
     print(f'Sorry, I did not find any restaurant matching these preferences: {stored_preferences[0]}, {stored_preferences[1]}, {stored_preferences[2]}. Please search again.')
 
 
 #list of already recommended restaurant (list of arrays)
 already_recommended = []
 
+print('Hello , welcome to the Cambridge restaurant system? You can ask for restaurants by area , price range or food type . How may I help you?')
 
 while(1):
     user_input = input()
