@@ -1,12 +1,16 @@
 import numpy as np
 from keras.models import load_model
+
 from model_feed_forward import sentence_to_vector_2
 from model_feed_forward import vector_to_label
 from model_feed_forward import to_one_hot
-from userpref import getUserPref
-from userpref import recommend
-from userpref import getUserRequest
-from userpref import checkDontCare
+
+from user_pref import getUserPref
+from user_pref import recommend
+from user_pref import getUserRequest
+from user_pref import checkDontCare
+
+from text_speech import text_to_speech
 
 
 
@@ -47,7 +51,10 @@ def print_aditional_info(aditionalInfo):
         if aditionalInfo[10] == 'romantic':
             type = 'is romantic'
             explanation = 'it allows you to stay for a long time.'
-        print('The restaurant ' + type + ', because ' + explanation)
+        # print('The restaurant ' + type + ', because ' + explanation)
+        info = 'The restaurant ' + type + ', because ' + explanation
+        text_to_speech(info)
+
 
 def print_restaurant(restaurant_info):
 
