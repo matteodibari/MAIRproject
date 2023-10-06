@@ -28,5 +28,5 @@ def text_to_speech(text):
 
 
 
-speech_to_text()
-text_to_speech("I recommend 'zizzi cambridge', it is an expensive Italian restaurant in the south of town.")
+# speech_to_text()
+# text_to_speech("I recommend 'zizzi cambridge', it is an expensive Italian restaurant in the south of town.")

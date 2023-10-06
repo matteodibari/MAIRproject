@@ -116,8 +116,6 @@ def recommend(all_pref, already_recommended, all=False):
                     score = score + 1
                 if pref == 'asian oriental' and 'asian' in row:
                     score = score + 1
-                if pref == None:
-                    score = score + 1
             if score == matches_needed and row not in already_recommended[:]:
                 if possible_restaurants is None:
                     possible_restaurants = row[0]
@@ -136,8 +134,8 @@ def recommend(all_pref, already_recommended, all=False):
                 all_restaurants.append(row[0])
 
     if all == False:
-        restaurant = user_pref.append(additional_request)
-        return restaurant
+        user_pref.append(additional_request)
+        return user_pref
     return all_restaurants
 
 
