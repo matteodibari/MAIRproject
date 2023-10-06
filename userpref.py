@@ -7,7 +7,7 @@ from sklearn import metrics
 from keras import layers
 
 # import the enchant module
-from enchant import utils
+import enchant
 import math
 import csv
 
@@ -25,28 +25,18 @@ postCodeKeyWords = ["postalcode", "postcode"]
 phoneKeyWords = ["contact", "phone"]
 addressKeyWords= ["address", "located"]
 
-
-sentense1 = "Im looking for an Expensive restaurant that serves asianoriental and north yes"
-sentense2 = "pan asian north "
-sentense3 = "m o d e r a  t ly priced restaurant in the south part of town"
-sentense4 = "I'm looking for a restaurant in any area that serves Tuscan food"
-sentense5 = "I would like the restaurant to be romantic"
-sentense6 = "uh whats the phone number and address please"
-
-
-
 def compareSets(types, sentence):
     """
-    This function take two arrrays. First one will be possible types of location price or food
-    and the second one will be the sentence. The function check levenshtein distance  of each type
-    on every subarray with the same length of it from the sentence and return the firrst match.
-    The distance should be less or equal to the length of the word so we can still catch wrong writen
-    longer words and also keep the accuracy good for
+    This function takes two arrays. The first one will be possible types of location price or food
+    and the second one will be the sentence. The function checks the Levenshtein distance of each type
+    on every subarray with the same length of it from the sentence and returns the first match.
+    The distance should be comparable to the length of the word so we can still catch wrong-written
+    longer words and also keep the accuracy good for short ones.
 
     :param set1: First set to compare
     :param sentence: Second set to comapare
-    :return: The first instance of an element in set
-             one that has small enough levenshtein distance with eleement in set two.
+    :return: The first instance of an element in the set
+             one that has a small enough Levenshtein distance with element in set two.
     """
     for type in types:
         index = - 1
@@ -55,7 +45,7 @@ def compareSets(types, sentence):
             if letter == type[0] and index + len(type) < len(sentence) + 1:
                 sub = sentence[index: index + len(type)]
 
-                diff = utils.levenshtein(type, sub)
+                diff = enchant.utils.levenshtein(type, sub)
                 if diff <= math.floor(len(type) / 5):
                     if type == 'asian':
                         type = 'asian oriental'
@@ -64,11 +54,11 @@ def compareSets(types, sentence):
 
 def getUserPref(sentence):
     """
-    This function check the sentence for all keywords about type of food, location and price.
-    Then matches keywords for dont care and fill them ontho the needed places.
+    This function checks the sentence for all keywords about the type of food, location and price.
+    Then match keywords for don't care and fill them in the needed places.
 
-    :param sentence: The sentence in which we weill search preferences
-    :return: list with preferences for price, location and food
+    :param sentence: The sentence in which we will search preferences.
+    :return: List with preferences for price, location and food.
     """
     sentence = sentence.replace(" ", "")
     sentence = sentence.lower()
@@ -89,15 +79,12 @@ def getUserPref(sentence):
             allPref[2] = "any"
     return allPref
 
-def checkDontCare(sentence):
-    sentence = sentence.replace(" ", "")
-    sentence = sentence.lower()
-    if compareSets(['dontcare', 'doesntmatter', 'doesnotmatter', 'donotcare', 'nopreference'], sentence):
-        return True
-    else: 
-        return False
-
 def getUserRequest(sentence):
+    """
+    A function that checks for requests about phone number, post code or address.
+    :param sentence: The sentence in which we will search preferences.
+    :return: List with requests for phone, address and post code.
+    """
     sentence = sentence.replace(" ", "")
     sentence = sentence.lower()
 
@@ -108,7 +95,21 @@ def getUserRequest(sentence):
 
     return allPref
 
+
+
+
 def recommend(allPref, already_recommended, all=False):
+    """
+    The function finds the best possible restaurant, based on the preference of the use
+    and the additional preferences that are asked separately. First, the function finds the
+    number of needed matches for requirements which removes anys and Nones. Then read
+    all the restaurants from the database and check for the number of matches.
+    :param allPref: All preferences of the user
+    :param already_recommended: List will all already recommended restaurants.
+    :param all: Should we return all possible restaurants or only one
+    :return: The whole line of the database with all the info and the type of additional request.
+    """
+    posibleRestaurants, additionalRequest = aditionalInfoRecommend()
     matchesNeeded = 3
     userPref = []
     for pref in allPref:
@@ -128,28 +129,59 @@ def recommend(allPref, already_recommended, all=False):
                     score = score + 1
                 if pref == None:
                     score = score + 1
-            if score == matchesNeeded and row not in already_recommended[:]:            
-                userPref.append(row[0])
-                for i in range(3):
-                    if allPref[i] == 'any':
-                        userPref.append('any')
-                    elif allPref[i] is None:
-                        userPref.append("unknown")
-                    else:
-                        userPref.append(row[i + 1])
-                userPref.extend(row[4:7])
-                if all == False:
-                    break
+            if score == matchesNeeded and row not in already_recommended[:]:
+                #This is just to handle empty aditional requrements
+                if posibleRestaurants is None:
+                    posibleRestaurants = row[0]
+                if row[0] in posibleRestaurants:
+                    userPref.append(row[0])
+                    for i in range(3):
+                        if allPref[i] == 'any':
+                            userPref.append('any')
+                        elif allPref[i] is None:
+                            userPref.append("unknown")
+                        else:
+                            userPref.append(row[i + 1])
+                    userPref.extend(row[4:10])
+                    if all == False:
+                        break
                 allRestaurants.append(row[0])
-                
+
     if all == False:
+        userPref.append(additionalRequest)
         return userPref
     return allRestaurants
 
+
+def checkDontCare(sentence):
+    """
+    This function just checks for any dont care statements in a sentence.
+    :param sentence: Input sentence
+    :return: True or False for containing don't care statement
+    """
+    sentence = sentence.replace(" ", "")
+    sentence = sentence.lower()
+    if compareSets(['dontcare', 'doesntmatter', 'doesnotmatter', 'donotcare', 'nopreference'], sentence):
+        return True
+    else:
+        return False
+
+
+
 keyWords = ['touristic', 'assignedseats', 'children', 'romantic']
 
-def aditionalInfoRecommend(sentence, lastSentence):
-    posibleRestaurants = recommend(getUserPref(lastSentence), True)
+def aditionalInfoRecommend():
+    """
+    This function takes an input statement from the user and from it finds
+    preferences about the place like good for children or romantic and makes a
+    list of possible restaurants.
+    :return: List of possible restaurants and users preferences.
+    """
+    sentence = input("Do you have additional requirements?")
+    if sentence == "No":
+        return None, None
+
+    posibleRestaurants = []
     userpref = compareSets(keyWords, sentence)
 
     with open('restaurant_info.csv', newline='') as csvfile:
@@ -158,11 +190,15 @@ def aditionalInfoRecommend(sentence, lastSentence):
         for row in spamreader:
             if len(row) < 1:
                 continue
-            if userpref == 'turistc' and row[1] == 'cheap' and row[7] == 'good' and row[2] != 'romanian' and row[0] in posibleRestaurants:
-                return row
-            if userpref == 'assignedseats' and row[8] == 'busy' and row[0] in posibleRestaurants:
-                return row
-            if userpref == 'children' and row[9] != 'long time' and row[0] in posibleRestaurants:
-                return row
-            if userpref == 'romantic' and row[8] != 'busy' and row[9] == 'long time' and row[0] in posibleRestaurants:
-                return row
+            if userpref == 'turistc' and row[1] == 'cheap' and row[7] == 'good' and row[2] != 'romanian':
+                posibleRestaurants.append(row[0])
+            if userpref == 'assignedseats' and row[8] == 'busy':
+                posibleRestaurants.append(row[0])
+            if userpref == 'children' and row[9] != 'long time':
+                posibleRestaurants.append(row[0])
+            if userpref == 'romantic' and row[8] != 'busy' and row[9] == 'long time':
+                posibleRestaurants.append(row[0])
+    if len(posibleRestaurants) == 0:
+        return None, None
+    return posibleRestaurants, userpref
+
