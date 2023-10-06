@@ -3,12 +3,10 @@ from keras.models import load_model
 from model_feed_forward import sentence_to_vector_2
 from model_feed_forward import vector_to_label
 from model_feed_forward import to_one_hot
-from Userpref import getUserPref
-from Userpref import recommend
-from Userpref import getUserRequest
-from Userpref import checkDontCare
-
-
+from userpref import get_user_pref
+from userpref import recommend
+from userpref import get_user_request
+from userpref import check_dont_care
 
 curr_state = 1
 #this variable keeps track of the current state during the state transitioning algorithm
@@ -18,52 +16,51 @@ stored_preferences = [None, None, None]
 
 ask_area = ['In which area are you searching for the restaurant?']
 ask_type = ['Which type of food are you searching for?']
-bye = ['Bye man!']
+bye = ['Goodbye!']
 error = ['Sorry, I did not understand what you meant.']
 
 
-def print_aditional_info(aditionalInfo):
+def print_aditional_info(aditional_info):
     """
-    This function prints in a user-friendly way information about the best restaurant.
-    :return: Print statement about the e additional requirements.
+    This function prints information about the best restaurant in a user-friendly manner.
     """
-    if aditionalInfo[10] is not None:
+
+    if aditional_info[10] is not None:
         type = ''
         explanation = ''
-        if aditionalInfo[10] == 'turistc':
+        if aditional_info[10] == 'touristic':
             type = 'is good for tourists'
-            if aditionalInfo[1] == 'cheap':
+            if aditional_info[1] == 'cheap':
                 explanation = ' the restaurant is cheap.'
-            elif aditionalInfo[7] == 'good':
+            elif aditional_info[7] == 'good':
                 explanation = 'the food is good.'
             else:
                 explanation = 'it is cheap and the food is good.'
-        if aditionalInfo[10] == 'assignedseats':
-            type = 'has an option to assign seats'
+        if aditional_info[10] == 'assignedseats':
+            type = 'seats are assigned by the restaurant'
             explanation = 'it is quite a busy place.'
-        if aditionalInfo[10] == 'children':
+        if aditional_info[10] == 'children':
             type = 'is good for children'
-            explanation = 'it do not allows you to stay for a long time.'
-        if aditionalInfo[10] == 'romantic':
+            explanation = 'it does not allow you to stay for a long time.'
+        if aditional_info[10] == 'romantic':
             type = 'is romantic'
             explanation = 'it allows you to stay for a long time.'
         print('The restaurant ' + type + ', because ' + explanation)
 
 def print_restaurant(restaurant_info):
-
-
     """
-    This function prints the suggestion given the information of a restaurant
+    This function prints the suggestion given the information of a restaurant.
 
-    :param restaurant_info: Information of the restaurant
+    :param restaurant_info: information of the restaurant.
     """
 
     if len(restaurant_info) == 1:
-        print('Sorry, there is no restaurant with that requierments.')
+        print('Sorry, there is no restaurant with these requirements.')
         return
+    
     print('The perfect restaurant is ' + restaurant_info[0] + ' with ' + restaurant_info[1] + 
-                          ' price range which is located in ' + restaurant_info [2] + ' part of the town and serve ' 
-                          + restaurant_info[3] + ' food')
+                          ' price range which is located in ' + restaurant_info [2] + ' part of the town and serves ' 
+                          + restaurant_info[3] + ' food.')
     print_aditional_info(restaurant_info)
 
     return
@@ -85,7 +82,7 @@ def predict_dialog_act(input_msg):
 
 
     #y = model.predict(np.array([sentence_to_vector_2('goodbye', words)]))
-    y = model.predict( np.array( [sentence_to_vector_2(input_msg, words),] ))
+    y = model.predict( np.array( [sentence_to_vector_2(input_msg, words),] ), verbose=0)
     y = to_one_hot(y[0])
     return vector_to_label(y)
 
@@ -105,6 +102,7 @@ print('Hello , welcome to the Cambridge restaurant system? You can ask for resta
 while(1):
     user_input = input()
     dialog_act = predict_dialog_act(user_input)
+    print(dialog_act)
 
     if dialog_act == 'restart':
         print('System restarting...')
@@ -120,16 +118,13 @@ while(1):
     if curr_state == 5: 
         stored_preferences = [None, None, None]
 
-    preferences = getUserPref(user_input)
+    preferences = get_user_pref(user_input)
     # preferences[3] = [price, location, typeoffood]
 
     for i in range(len(stored_preferences)):
         if preferences[i] != None: 
             stored_preferences[i] = preferences[i]
             preferences_changed = True
-
-
-
 
     match curr_state:
         case 1:
@@ -142,7 +137,6 @@ while(1):
                 curr_state = 3
             else:
                 restaurant_info = recommend(stored_preferences, already_recommended)
-                #restaurant_info[4] = [restaurant, price, location, typeoffood]
                 
                 if restaurant_info:
                     already_recommended.append(restaurant_info)
@@ -153,7 +147,7 @@ while(1):
                     print_apologies()
         case 2:
             
-            if checkDontCare(user_input):
+            if check_dont_care(user_input):
                 stored_preferences[1] = 'any'
 
             if dialog_act == 'None':
@@ -165,7 +159,6 @@ while(1):
                 curr_state = 3
             else:
                 restaurant_info = recommend(stored_preferences, already_recommended)
-
                 
                 if restaurant_info:
                     already_recommended.append(restaurant_info)
@@ -177,7 +170,7 @@ while(1):
 
         case 3:
 
-            if checkDontCare(user_input):
+            if check_dont_care(user_input):
                 stored_preferences[2] = 'any'
             
             if dialog_act == 'None':
@@ -208,7 +201,7 @@ while(1):
                         curr_state = 5
                         print_apologies()
                 else:
-                    requests = getUserRequest(user_input)
+                    requests = get_user_request(user_input)
                     if requests[0] != None: print(f'The phone number of the restaurant is {already_recommended[-1][4]}')
                     if requests[1] != None: print(f'The address of the restaurant is {already_recommended[-1][5]}')
                     if requests[2] != None: print(f'The post code of the restaurant is {already_recommended[-1][6]}')
@@ -235,7 +228,6 @@ while(1):
                 curr_state = 3
             else:
                 restaurant_info = recommend(stored_preferences, already_recommended)
-                #restaurant_info[4] = [restaurant, price, location, typeoffood]
                 
                 if restaurant_info:
                     already_recommended.append(restaurant_info[0])
@@ -245,8 +237,7 @@ while(1):
                     curr_state = 5
                     print_apologies()
         
-
-    print(curr_state)
+    # print(curr_state)
 
 
 
