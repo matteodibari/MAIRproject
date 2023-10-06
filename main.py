@@ -3,10 +3,10 @@ from keras.models import load_model
 from model_feed_forward import sentence_to_vector_2
 from model_feed_forward import vector_to_label
 from model_feed_forward import to_one_hot
-from userpref import get_user_pref
-from userpref import recommend
-from userpref import get_user_request
-from userpref import check_dont_care
+from user_pref import get_user_pref
+from user_pref import recommend
+from user_pref import get_user_request
+from user_pref import check_dont_care
 
 curr_state = 1
 #this variable keeps track of the current state during the state transitioning algorithm
