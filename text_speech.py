@@ -1,5 +1,5 @@
 # implements the speech-to-text and the text-to-speech
-from gtts import gTTS
+import pyttsx3 as p3
 import speech_recognition as sr
 
 def speech_to_text():
@@ -15,14 +15,17 @@ def speech_to_text():
         text = reco.recognize_sphinx(audio, language="en-US")
         print("the consequence is: ", text)
     except sr.UnknownValueError:
-        print("can't recognize")
+        print("sorry I can't recognize")
     except sr.RequestError as error:
         print("error: ", str(error))
 
 def text_to_speech(text):
-    # transform the text into a mp3 audio
-    t = gTTS(text)
-    t.save("audio/ad1.mp3")
+    # create the object
+    speech = p3.init()
+    # transform the text into a audio which can only be played once
+    speech.say(text)
+    speech.runAndWait()
+
 
 
 speech_to_text()
