@@ -136,7 +136,7 @@ def recommend(all_pref, already_recommended, all=False):
 
     if all == False:
         if randomOutput == 'yes':
-            index = random.randint(0, len(allRestaurants))
+            index = random.randint(0, len(allRestaurants) - 1)
             allRestaurants[index].append(additionalRequest)
             return allRestaurants[index]
         user_pref.append(additional_request)
