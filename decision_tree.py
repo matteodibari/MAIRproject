@@ -1,5 +1,4 @@
 # This is a sample Python script.
-
 import numpy as np
 import joblib as jl
 
@@ -9,8 +8,6 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn import metrics
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 
 
 # process and split the data
@@ -62,7 +59,6 @@ def train_test_DTC(train_features, test_features, train_labels, test_labels):
     # train_accuracy = clf.score(train_feature_matrix, train_labels)
     # test_accuracy = clf.score(test_feature_matrix, test_labels)
     pred = clf.predict(test_feature_matrix)
-    # print(pred)
     # evaluation?
     print(f"Test Accuracy: {metrics.accuracy_score(test_labels, pred)}")
     print(f"Test Precision: {metrics.precision_score(test_labels, pred, average='macro')}")

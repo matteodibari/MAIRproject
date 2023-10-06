@@ -192,4 +192,3 @@ def recommend_additional_info():
         userpref = None
     
     return possible_restaurants, userpref
-
