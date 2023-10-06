@@ -1,6 +1,7 @@
 from enchant import utils
 import math
 import csv
+import random
 
 #the following lines define the keywords used for preference matching
 
@@ -97,7 +98,7 @@ def recommend(all_pref, already_recommended, all=False):
     :param all: if this param is true the function returns a list of all the possible restaurants.
     :return restaurant: the whole line of the database relative to the recommended restaurant.
     """
-
+    randomOutput = input("Do you want the preferences to be in random order")
     possible_restaurants, additional_request = recommend_additional_info()
     matches_needed = 3
     user_pref = []
@@ -129,11 +130,15 @@ def recommend(all_pref, already_recommended, all=False):
                         else:
                             user_pref.append(row[i + 1])
                     user_pref.extend(row[4:10])
-                    if all == False:
+                    if all == False and randomOutput != 'yes':
                         break
-                all_restaurants.append(row[0])
+                all_restaurants.append(row)
 
     if all == False:
+        if randomOutput == 'yes':
+            index = random.randint(0, len(allRestaurants))
+            allRestaurants[index].append(additionalRequest)
+            return allRestaurants[index]
         user_pref.append(additional_request)
         return user_pref
     return all_restaurants
