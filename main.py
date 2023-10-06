@@ -3,10 +3,11 @@ from keras.models import load_model
 from model_feed_forward import sentence_to_vector_2
 from model_feed_forward import vector_to_label
 from model_feed_forward import to_one_hot
-from userpref import getUserPref
-from userpref import recommend
-from userpref import getUserRequest
-from userpref import checkDontCare
+from Userpref import getUserPref
+from Userpref import recommend
+from Userpref import getUserRequest
+from Userpref import checkDontCare
+
 
 
 curr_state = 1
@@ -20,17 +21,53 @@ ask_type = ['Which type of food are you searching for?']
 bye = ['Bye man!']
 error = ['Sorry, I did not understand what you meant.']
 
+
+def print_aditional_info(aditionalInfo):
+    """
+    This function prints in a user-friendly way information about the best restaurant.
+    :return: Print statement about the e additional requirements.
+    """
+    if aditionalInfo[10] is not None:
+        type = ''
+        explanation = ''
+        if aditionalInfo[10] == 'turistc':
+            type = 'is good for tourists'
+            if aditionalInfo[1] == 'cheap':
+                explanation = ' the restaurant is cheap.'
+            elif aditionalInfo[7] == 'good':
+                explanation = 'the food is good.'
+            else:
+                explanation = 'it is cheap and the food is good.'
+        if aditionalInfo[10] == 'assignedseats':
+            type = 'has an option to assign seats'
+            explanation = 'it is quite a busy place.'
+        if aditionalInfo[10] == 'children':
+            type = 'is good for children'
+            explanation = 'it do not allows you to stay for a long time.'
+        if aditionalInfo[10] == 'romantic':
+            type = 'is romantic'
+            explanation = 'it allows you to stay for a long time.'
+        print('The restaurant ' + type + ', because ' + explanation)
+
 def print_restaurant(restaurant_info):
+
+
     """
     This function prints the suggestion given the information of a restaurant
 
     :param restaurant_info: Information of the restaurant
     """
-    
+
+    if len(restaurant_info) == 1:
+        print('Sorry, there is no restaurant with that requierments.')
+        return
     print('The perfect restaurant is ' + restaurant_info[0] + ' with ' + restaurant_info[1] + 
                           ' price range which is located in ' + restaurant_info [2] + ' part of the town and serve ' 
                           + restaurant_info[3] + ' food')
+    print_aditional_info(restaurant_info)
+
     return
+
 
 def predict_dialog_act(input_msg):
     """
@@ -46,6 +83,8 @@ def predict_dialog_act(input_msg):
         data = f.read()
         words = data.split('\n')
 
+
+    #y = model.predict(np.array([sentence_to_vector_2('goodbye', words)]))
     y = model.predict( np.array( [sentence_to_vector_2(input_msg, words),] ))
     y = to_one_hot(y[0])
     return vector_to_label(y)
@@ -66,8 +105,7 @@ print('Hello , welcome to the Cambridge restaurant system? You can ask for resta
 while(1):
     user_input = input()
     dialog_act = predict_dialog_act(user_input)
-    
-    print(dialog_act)
+
     if dialog_act == 'restart':
         print('System restarting...')
         stored_preferences = [None, None, None]
@@ -91,7 +129,6 @@ while(1):
             preferences_changed = True
 
 
-    print(stored_preferences)
 
 
     match curr_state:
@@ -128,6 +165,7 @@ while(1):
                 curr_state = 3
             else:
                 restaurant_info = recommend(stored_preferences, already_recommended)
+
                 
                 if restaurant_info:
                     already_recommended.append(restaurant_info)
@@ -161,6 +199,7 @@ while(1):
             if dialog_act in ['reqalts', 'request', 'reqmore', 'inform']:
                 if preferences_changed:
                     restaurant_info = recommend(stored_preferences, already_recommended)
+
                     if restaurant_info:
                         already_recommended.append(restaurant_info)
                         curr_state = 4
@@ -173,6 +212,7 @@ while(1):
                     if requests[0] != None: print(f'The phone number of the restaurant is {already_recommended[-1][4]}')
                     if requests[1] != None: print(f'The address of the restaurant is {already_recommended[-1][5]}')
                     if requests[2] != None: print(f'The post code of the restaurant is {already_recommended[-1][6]}')
+
                     curr_state = 4
             elif dialog_act in ['thankyou', 'bye']:
                 print(bye[0])
