@@ -3,10 +3,10 @@ from keras.models import load_model
 from model_feed_forward import sentence_to_vector_2
 from model_feed_forward import vector_to_label
 from model_feed_forward import to_one_hot
-from Userpref import getUserPref
-from Userpref import recommend
-from Userpref import getUserRequest
-from Userpref import checkDontCare
+from userpref import getUserPref
+from userpref import recommend
+from userpref import getUserRequest
+from userpref import checkDontCare
 
 
 
