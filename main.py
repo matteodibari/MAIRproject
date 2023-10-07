@@ -18,6 +18,9 @@ from text_speech import speech_to_text
 curr_state = 1
 #this variable keeps track of the current state during the state transitioning algorithm
 
+input_type = None
+#this variable is set in the first iteration of the loop. It will be 1 if the input is from keyboard, 2 if the input is from microphone
+
 stored_preferences = [None, None, None]
 #stored-preferences = [price-range, area, type]
 
@@ -36,10 +39,10 @@ def add_customisations():
     """
     global random_output
     global levenshtein_precision
-    customiseInput = input("Do you want to add customizations to the system?")
+    customiseInput = input("Do you want to add customizations to the system?\n")
     if customiseInput == 'yes':
         random_output = input("Do you want the preferences to be in random order?")
-        distancePrecision = input("What degree of precision do you want about the Levenshtein disance: low, medium or high?")
+        distancePrecision = input("What degree of precision would you like for the Levenshtein disance: low, medium or high?")
         if distancePrecision == 'low':
             levenshtein_precision = 2
         if distancePrecision == 'high':
@@ -49,11 +52,15 @@ def get_user_input():
     """
     This function helps the user choose the way they input the message and gets the input as return
     """
-    print('Choose the way you want to input message: 1.type or 2.audio?(please type the number 1 or 2)\n')
-    text_to_speech('Choose the way you want to input message: type or audio?')
-    choice = input()
+    global input_type
 
-    if int(choice) == 1:
+    if input_type == None:
+        print('Set the way you want to input the messages. (Type 1 for keyboard input, 2 for voice input)')
+        #text_to_speech('Choose the way you want to input message. (Type 1 for keyboard input, 2 for voice input)')
+        input_type = input()
+        return
+
+    if int(input_type) == 1:
         message = input()
     else:
         message = speech_to_text()
@@ -107,14 +114,21 @@ def print_restaurant(restaurant_info):
     print('The perfect restaurant is ' + restaurant_info[0] + ' with ' + restaurant_info[1] +
                           ' price range which is located in ' + restaurant_info [2] + ' part of the town and serves '
                           + restaurant_info[3] + ' food.')
-    info = 'The perfect restaurant is ' + restaurant_info[0] + ' with ' + restaurant_info[1] +
+    info = str('The perfect restaurant is ' + restaurant_info[0] + ' with ' + restaurant_info[1] +
                           ' price range which is located in ' + restaurant_info [2] + ' part of the town and serves '
-                          + restaurant_info[3] + ' food.'
+                          + restaurant_info[3] + ' food.')
     text_to_speech(info)
     print_aditional_info(restaurant_info)
 
     return
 
+def print_apologies():
+    """
+    This function prints the apologies given the current user preferences.
+    """
+
+    print(f'Sorry, I did not find any restaurant matching these preferences: {stored_preferences[0]}, {stored_preferences[1]}, {stored_preferences[2]}. Please search again.')
+    text_to_speech(f'Sorry, I did not find any restaurant matching these preferences: {stored_preferences[0]}, {stored_preferences[1]}, {stored_preferences[2]}. Please search again.')
 
 def predict_dialog_act(input_msg):
     """
@@ -136,19 +150,11 @@ def predict_dialog_act(input_msg):
     y = to_one_hot(y[0])
     return vector_to_label(y)
 
-def print_apologies():
-    """
-    This function prints the apologies given the current user preferences.
-    """
-
-    print(f'Sorry, I did not find any restaurant matching these preferences: {stored_preferences[0]}, {stored_preferences[1]}, {stored_preferences[2]}. Please search again.')
-    text_to_speech(f'Sorry, I did not find any restaurant matching these preferences: {stored_preferences[0]}, {stored_preferences[1]}, {stored_preferences[2]}. Please search again.')
-
-
 #list of already recommended restaurant (list of arrays)
 already_recommended = []
 
 add_customisations()
+get_user_input() #this function call is just to set the type of input (keyboard or microphone)
 print('Hello , welcome to the Cambridge restaurant system? You can ask for restaurants by area , price range or food type . How may I help you?')
 text_to_speech('Hello , welcome to the Cambridge restaurant system? You can ask for restaurants by area , price range or food type . How may I help you?')
 
@@ -260,7 +266,7 @@ while(1):
                         curr_state = 5
                         print_apologies()
                 else:
-                    requests = get_user_request(user_input, levenshteinPrecision)
+                    requests = get_user_request(user_input, levenshtein_precision)
                     if requests[0] != None: 
                         print(f'The phone number of the restaurant is {already_recommended[-1][4]}')
                         text_to_speech(f'The phone number of the restaurant is {already_recommended[-1][4]}')

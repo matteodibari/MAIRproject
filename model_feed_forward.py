@@ -132,7 +132,7 @@ def sentence_to_vector_2(sentence, bag_of_words):
             array[bag_of_words.index(word)] = 1
     return array
 
-def get_data():
+def get_data(without_duplicates=False):
     """
     This function takes all the given data, shuffles it, and divides it in 2 parts:
     the first 85% for the training set and the remaining 15% for the test set.
@@ -141,20 +141,24 @@ def get_data():
     the training output, the test input and the test output. 
     """
 
-    datContent = [i.strip().split(' ', 1) for i in open("./dialog_acts.dat").readlines()]
+    if without_duplicates:
+        datContent = [i.strip().split(' ', 1) for i in open("./dialog_acts_deduplicated.dat").readlines()]    
+    else:
+        datContent = [i.strip().split(' ', 1) for i in open("./dialog_acts.dat").readlines()]
+    
     np.random.shuffle(datContent)
     array = np.array(datContent)
     x_train, x_test, y_train, y_test = model_selection.train_test_split(array[:,1], array[:,0], test_size=0.15, random_state=42)
     return x_train, x_test, y_train, y_test
 
-def train_model():
+def train_model(without_duplicates=False):
     """
     This function uses the data and the bag of words to train and subsequently test 
     a keras model.
     """
     global words
 
-    x_train, x_test, y_train, y_test = get_data()
+    x_train, x_test, y_train, y_test = get_data(without_duplicates)
     words = bag_of_words(x_train)
 
     # with open('bag_of_words.txt', 'w') as f:

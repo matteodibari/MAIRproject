@@ -129,13 +129,16 @@ def recommend(all_pref, already_recommended, randomOutput, all=False):
                     possible_restaurants = row[0]
                 if row[0] in possible_restaurants:
                     user_pref.append(row[0])
-                    for i in range(3):
-                        if all_pref[i] == 'any':
-                            user_pref.append('any')
-                        elif all_pref[i] is None:
-                            user_pref.append("unknown")
-                        else:
-                            user_pref.append(row[i + 1])
+                    # for i in range(3):
+                    #     if all_pref[i] == 'any':
+                    #         user_pref.append('any')
+                    #     elif all_pref[i] is None:
+                    #         user_pref.append("unknown")
+                    #     else:
+                    #         user_pref.append(row[i + 1])
+                    user_pref.append(row[1])
+                    user_pref.append(row[2])
+                    user_pref.append(row[3])
                     user_pref.extend(row[4:10])
                     if all == False and randomOutput != 'yes':
                         break
