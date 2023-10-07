@@ -29,6 +29,10 @@ randomOutput = 'no'
 levenshteinPrecision = 5
 
 def add_customisations():
+    """
+    This function takes user input and modifies parameters for the Levenshtein edit distance
+    and the order in which restaurants are chosen.
+    """
     global randomOutput
     global levenshteinPrecision
     customiseInput = input("Do you want to add customizations to the system")
