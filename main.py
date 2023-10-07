@@ -36,10 +36,16 @@ def add_customisations():
     """
     global randomOutput
     global levenshteinPrecision
-    customiseInput = input("Do you want to add customizations to the system")
+    print("Do you want to add customizations to the system?")
+    text_to_speech("Do you want to add customizations to the system?")
+    customiseInput = input()
     if customiseInput == 'yes':
-        randomOutput = input("Do you want the preferences to be in random order")
-        distancePrecision = input("What degree of precision do you want about the Levenshtein disance: low, medium or high")
+        print("Do you want the preferences to be in random order?")
+        text_to_speech("Do you want the preferences to be in random order?")
+        randomOutput = input()
+        print("What degree of precision do you want about the Levenshtein distance: low, medium or high?")
+        text_to_speech("What degree of precision do you want about the Levenshtein distance: low, medium or high?")
+        distancePrecision = input()
         if distancePrecision == 'low':
             levenshteinPrecision = 2
         if distancePrecision == 'high':
