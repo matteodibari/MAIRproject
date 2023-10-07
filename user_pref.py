@@ -25,6 +25,7 @@ def compare_sets(keywords, sentence, precision):
 
     :param types: keywords.
     :param sentence: sentence to use for the matching.
+    :param precision: Precision of the Levinstein edit diatance.
     :return keyword: first matching keyword.
     """
     for keyword in keywords:
@@ -49,6 +50,7 @@ def get_user_pref(sentence, precision):
     the corresponding field with 'any'.
 
     :param sentence: sentence to use for the keyword matching.
+    :param precision: Precision of the Levinstein edit diatance.
     :return: list with preferences for price, location and food.
     """
     sentence = sentence.replace(" ", "")
@@ -76,6 +78,7 @@ def get_user_request(sentence, precision):
     A function that checks for requests about phone number, post code or address.
 
     :param sentence: the sentence in which we will search preferences.
+    :param precision: Precision of the Levinstein edit diatance.
     :return: list with requests for phone, address and post code.
     """
     sentence = sentence.replace(" ", "")
@@ -98,6 +101,7 @@ def recommend(all_pref, already_recommended, randomOutput, all=False):
 
     :param all_pref: all user preferences.
     :param already_recommended: list with all already recommended restaurants.
+    :param randomOutput: Parameter for listing restaurants in random order.
     :param all: if this param is true the function returns a list of all the possible restaurants.
     :return restaurant: the whole line of the database relative to the recommended restaurant.
     """
@@ -152,6 +156,7 @@ def check_dont_care(sentence, precision):
     This function checks for any dont care statements in a sentence.
 
     :param sentence: input sentence.
+    :param precision: Precision of the Levinstein edit diatance.
     :return: True or False for containing don't care statement.
     """
 
@@ -169,6 +174,7 @@ def recommend_additional_info(precision=5):
     preferences about the place (good for children, romantic, etc.) and gives a
     list of possible restaurants.
 
+    :param precision: Precision of the Levinstein edit diatance.
     :return: list of possible restaurants and users preferences.
     """
 
