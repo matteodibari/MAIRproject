@@ -45,6 +45,20 @@ def add_customisations():
         if distancePrecision == 'high':
             levenshteinPrecision = 7
 
+def get_user_input():
+    """
+    This function helps the user choose the way they input the message and gets the input as return
+    """
+    print('Choose the way you want to input message: 1.type or 2.audio?(please type the number 1 or 2)\n')
+    text_to_speech('Choose the way you want to input message: type or audio?')
+    choice = input()
+
+    if int(choice) == 1:
+        message = input()
+    else:
+        message = speech_to_text()
+    return message
+
 
 def print_aditional_info(aditional_info):
     """
@@ -137,7 +151,8 @@ print('Hello , welcome to the Cambridge restaurant system? You can ask for resta
 text_to_speech('Hello , welcome to the Cambridge restaurant system? You can ask for restaurants by area , price range or food type . How may I help you?')
 
 while(1):
-    user_input = input()
+    # user_input = input()
+    user_input = get_user_input()
     dialog_act = predict_dialog_act(user_input)
     print(dialog_act)
 

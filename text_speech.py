@@ -14,6 +14,7 @@ def speech_to_text():
     try:
         text = reco.recognize_sphinx(audio, language="en-US")
         print("The consequence is: ", text)
+        return text
     except sr.UnknownValueError:
         print("Sorry I can't recognize your voice")
     except sr.RequestError as error:
