@@ -25,29 +25,31 @@ ask_type = ['Which type of food are you searching for?']
 bye = ['Goodbye!']
 error = ['Sorry, I did not understand what you meant.']
 
-randomOutput = 'no'
-levenshteinPrecision = 5
+random_output = 'no'
+levenshtein_precision = 5
 
 def add_customisations():
     """
     This function takes user input and modifies parameters for the Levenshtein edit distance
     and the order in which restaurants are chosen.
     """
-    global randomOutput
-    global levenshteinPrecision
-    customiseInput = input("Do you want to add customizations to the system")
+    global random_output
+    global levenshtein_precision
+    customiseInput = input("Do you want to add customizations to the system?")
     if customiseInput == 'yes':
-        randomOutput = input("Do you want the preferences to be in random order")
-        distancePrecision = input("What degree of precision do you want about the Levenshtein disance: low, medium or high")
+        random_output = input("Do you want the preferences to be in random order?")
+        distancePrecision = input("What degree of precision do you want about the Levenshtein disance: low, medium or high?")
         if distancePrecision == 'low':
-            levenshteinPrecision = 2
+            levenshtein_precision = 2
         if distancePrecision == 'high':
-            levenshteinPrecision = 7
+            levenshtein_precision = 7
 
 
 def print_aditional_info(aditional_info):
     """
     This function prints information about the best restaurant in a user-friendly manner.
+
+    :param additional_info: info to be printed.
     """
 
     if aditional_info[10] is not None:
@@ -148,7 +150,7 @@ while(1):
     if curr_state == 5:
         stored_preferences = [None, None, None]
 
-    preferences = get_user_pref(user_input, levenshteinPrecision)
+    preferences = get_user_pref(user_input, levenshtein_precision)
     # preferences[3] = [price, location, typeoffood]
 
     for i in range(len(stored_preferences)):
@@ -166,7 +168,7 @@ while(1):
                 print(ask_type[0])
                 curr_state = 3
             else:
-                restaurant_info = recommend(stored_preferences, already_recommended, randomOutput)
+                restaurant_info = recommend(stored_preferences, already_recommended, random_output)
 
                 if restaurant_info:
                     already_recommended.append(restaurant_info)
@@ -177,7 +179,7 @@ while(1):
                     print_apologies()
         case 2:
 
-            if check_dont_care(user_input, levenshteinPrecision):
+            if check_dont_care(user_input, levenshtein_precision):
                 stored_preferences[1] = 'any'
 
             if dialog_act == 'None':
@@ -188,7 +190,7 @@ while(1):
                 print(ask_type[0])
                 curr_state = 3
             else:
-                restaurant_info = recommend(stored_preferences, already_recommended, randomOutput)
+                restaurant_info = recommend(stored_preferences, already_recommended, random_output)
 
                 if restaurant_info:
                     already_recommended.append(restaurant_info)
@@ -200,14 +202,14 @@ while(1):
 
         case 3:
 
-            if check_dont_care(user_input, levenshteinPrecision):
+            if check_dont_care(user_input, levenshtein_precision):
                 stored_preferences[2] = 'any'
 
             if dialog_act == 'None':
                 curr_state = 3
                 continue
 
-            restaurant_info = recommend(stored_preferences, already_recommended, randomOutput)
+            restaurant_info = recommend(stored_preferences, already_recommended, random_output)
 
             if restaurant_info:
                 already_recommended.append(restaurant_info)
@@ -221,7 +223,7 @@ while(1):
 
             if dialog_act in ['reqalts', 'request', 'reqmore', 'inform']:
                 if preferences_changed:
-                    restaurant_info = recommend(stored_preferences, already_recommended, randomOutput)
+                    restaurant_info = recommend(stored_preferences, already_recommended, random_output)
 
                     if restaurant_info:
                         already_recommended.append(restaurant_info)
@@ -231,7 +233,7 @@ while(1):
                         curr_state = 5
                         print_apologies()
                 else:
-                    requests = get_user_request(user_input, levenshteinPrecision)
+                    requests = get_user_request(user_input, levenshtein_precision)
                     if requests[0] != None: print(f'The phone number of the restaurant is {already_recommended[-1][4]}')
                     if requests[1] != None: print(f'The address of the restaurant is {already_recommended[-1][5]}')
                     if requests[2] != None: print(f'The post code of the restaurant is {already_recommended[-1][6]}')
@@ -257,7 +259,7 @@ while(1):
                 print(ask_type[0])
                 curr_state = 3
             else:
-                restaurant_info = recommend(stored_preferences, already_recommended, randomOutput)
+                restaurant_info = recommend(stored_preferences, already_recommended, random_output)
 
                 if restaurant_info:
                     already_recommended.append(restaurant_info[0])
