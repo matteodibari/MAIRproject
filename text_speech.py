@@ -8,16 +8,16 @@ def speech_to_text():
     # use the microphone(PyAudi) to record
     with sr.Microphone() as source:
         audio = reco.listen(source)
-        print("please talk: ")
+        print("Please talk: ")
 
     # transition
     try:
         text = reco.recognize_sphinx(audio, language="en-US")
-        print("the consequence is: ", text)
+        print("The consequence is: ", text)
     except sr.UnknownValueError:
-        print("sorry I can't recognize")
+        print("Sorry I can't recognize your voice")
     except sr.RequestError as error:
-        print("error: ", str(error))
+        print("Error: ", str(error))
 
 def text_to_speech(text):
     # create the object

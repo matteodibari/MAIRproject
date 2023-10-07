@@ -95,10 +95,8 @@ def predict_new(clf, vectorizer, label_binarizer):
 def export_model(clf):
     jl.dump(clf, 'DTC.pkl')
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    # train and test the classifier, then use ex to predict
-    train_features, test_features, train_labels, test_labels = data_process()
-    clf, vectorizer, label_binarizer = train_test_DTC(train_features, test_features, train_labels, test_labels)
-    predict_new(clf, vectorizer, label_binarizer)
+
+train_features, test_features, train_labels, test_labels = data_process()
+clf, vectorizer, label_binarizer = train_test_DTC(train_features, test_features, train_labels, test_labels)
+predict_new(clf, vectorizer, label_binarizer)
 
