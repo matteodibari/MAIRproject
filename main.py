@@ -11,6 +11,7 @@ from user_pref import get_user_request
 from user_pref import check_dont_care
 
 from text_speech import text_to_speech
+from text_speech import speech_to_text
 
 
 
@@ -44,6 +45,20 @@ def add_customisations():
         if distancePrecision == 'high':
             levenshtein_precision = 7
 
+def get_user_input():
+    """
+    This function helps the user choose the way they input the message and gets the input as return
+    """
+    print('Choose the way you want to input message: 1.type or 2.audio?(please type the number 1 or 2)\n')
+    text_to_speech('Choose the way you want to input message: type or audio?')
+    choice = input()
+
+    if int(choice) == 1:
+        message = input()
+    else:
+        message = speech_to_text()
+    return message
+
 
 def print_aditional_info(aditional_info):
     """
@@ -74,8 +89,7 @@ def print_aditional_info(aditional_info):
             type = 'is romantic'
             explanation = 'it allows you to stay for a long time.'
         print('The restaurant ' + type + ', because ' + explanation)
-        info = 'The restaurant ' + type + ', because ' + explanation
-        text_to_speech(info)
+        text_to_speech('The restaurant ' + type + ', because ' + explanation)
 
 
 def print_restaurant(restaurant_info):
@@ -87,11 +101,16 @@ def print_restaurant(restaurant_info):
 
     if len(restaurant_info) == 1:
         print('Sorry, there is no restaurant with these requirements.')
+        text_to_speech('Sorry, there is no restaurant with these requirements.')
         return
 
     print('The perfect restaurant is ' + restaurant_info[0] + ' with ' + restaurant_info[1] +
                           ' price range which is located in ' + restaurant_info [2] + ' part of the town and serves '
                           + restaurant_info[3] + ' food.')
+    info = 'The perfect restaurant is ' + restaurant_info[0] + ' with ' + restaurant_info[1] +
+                          ' price range which is located in ' + restaurant_info [2] + ' part of the town and serves '
+                          + restaurant_info[3] + ' food.'
+    text_to_speech(info)
     print_aditional_info(restaurant_info)
 
     return
@@ -123,6 +142,7 @@ def print_apologies():
     """
 
     print(f'Sorry, I did not find any restaurant matching these preferences: {stored_preferences[0]}, {stored_preferences[1]}, {stored_preferences[2]}. Please search again.')
+    text_to_speech(f'Sorry, I did not find any restaurant matching these preferences: {stored_preferences[0]}, {stored_preferences[1]}, {stored_preferences[2]}. Please search again.')
 
 
 #list of already recommended restaurant (list of arrays)
@@ -130,17 +150,21 @@ already_recommended = []
 
 add_customisations()
 print('Hello , welcome to the Cambridge restaurant system? You can ask for restaurants by area , price range or food type . How may I help you?')
+text_to_speech('Hello , welcome to the Cambridge restaurant system? You can ask for restaurants by area , price range or food type . How may I help you?')
 
 while(1):
-    user_input = input()
+    # user_input = input()
+    user_input = get_user_input()
     dialog_act = predict_dialog_act(user_input)
     print(dialog_act)
 
     if dialog_act == 'restart':
         print('System restarting...')
+        text_to_speech('System restarting...')
         stored_preferences = [None, None, None]
         already_recommended = []
         print('Hello , welcome to the Cambridge restaurant system? You can ask for restaurants by area , price range or food type . How may I help you?')
+        text_to_speech('Hello , welcome to the Cambridge restaurant system? You can ask for restaurants by area , price range or food type . How may I help you?')
         curr_state = 1
         continue
 
@@ -163,9 +187,11 @@ while(1):
 
             if stored_preferences[1] == None:
                 print(ask_area[0])
+                text_to_speech(ask_area[0])
                 curr_state = 2
             elif stored_preferences[2] == None:
                 print(ask_type[0])
+                text_to_speech(ask_type[0])
                 curr_state = 3
             else:
                 restaurant_info = recommend(stored_preferences, already_recommended, random_output)
@@ -188,6 +214,7 @@ while(1):
 
             if stored_preferences[2] == None:
                 print(ask_type[0])
+                text_to_speech(ask_type[0])
                 curr_state = 3
             else:
                 restaurant_info = recommend(stored_preferences, already_recommended, random_output)
@@ -233,30 +260,41 @@ while(1):
                         curr_state = 5
                         print_apologies()
                 else:
-                    requests = get_user_request(user_input, levenshtein_precision)
-                    if requests[0] != None: print(f'The phone number of the restaurant is {already_recommended[-1][4]}')
-                    if requests[1] != None: print(f'The address of the restaurant is {already_recommended[-1][5]}')
-                    if requests[2] != None: print(f'The post code of the restaurant is {already_recommended[-1][6]}')
+                    requests = get_user_request(user_input, levenshteinPrecision)
+                    if requests[0] != None: 
+                        print(f'The phone number of the restaurant is {already_recommended[-1][4]}')
+                        text_to_speech(f'The phone number of the restaurant is {already_recommended[-1][4]}')
+                    if requests[1] != None: 
+                        print(f'The address of the restaurant is {already_recommended[-1][5]}')
+                        text_to_speech(f'The address of the restaurant is {already_recommended[-1][5]}')
+                    if requests[2] != None: 
+                        print(f'The post code of the restaurant is {already_recommended[-1][6]}')
+                        text_to_speech(f'The post code of the restaurant is {already_recommended[-1][6]}')
 
                     curr_state = 4
             elif dialog_act in ['thankyou', 'bye']:
                 print(bye[0])
+                text_to_speech(bye[0])
                 exit()
             else:
                 print(error[0])
+                text_to_speech(error[0])
 
         case 5:
 
             if dialog_act in ['thankyou', 'bye']:
                 print(bye[0])
+                text_to_speech(bye[0])
                 exit()
 
             #this is the same as going to state 1 but without the extra input from the user
             if stored_preferences[1] == None:
                 print(ask_area[0])
+                text_to_speech(ask_area[0])
                 curr_state = 2
             elif stored_preferences[2] == None:
                 print(ask_type[0])
+                text_to_speech(ask_type[0])
                 curr_state = 3
             else:
                 restaurant_info = recommend(stored_preferences, already_recommended, random_output)
