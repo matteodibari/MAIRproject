@@ -90,6 +90,10 @@ def print_restaurant(restaurant_info):
     print('The perfect restaurant is ' + restaurant_info[0] + ' with ' + restaurant_info[1] +
                           ' price range which is located in ' + restaurant_info [2] + ' part of the town and serves '
                           + restaurant_info[3] + ' food.')
+    info = 'The perfect restaurant is ' + restaurant_info[0] + ' with ' + restaurant_info[1] +
+                          ' price range which is located in ' + restaurant_info [2] + ' part of the town and serves '
+                          + restaurant_info[3] + ' food.'
+    text_to_speech(info)
     print_aditional_info(restaurant_info)
 
     return
