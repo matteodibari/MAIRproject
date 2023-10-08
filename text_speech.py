@@ -3,6 +3,10 @@ import pyttsx3 as p3
 import speech_recognition as sr
 
 def speech_to_text():
+    """
+    This function implements the transformation from audio to text(speech recognition).
+    :return result: a recognized text.
+    """
     reco = sr.Recognizer()
 
     # use the microphone(PyAudi) to record
@@ -21,13 +25,12 @@ def speech_to_text():
         print("Error: ", str(error))
 
 def text_to_speech(text):
+    """
+    This function implements the transformation from text to audio.
+    :param text: text message to be transformed.
+    """
     # create the object
     speech = p3.init()
     # transform the text into a audio which can only be played once
     speech.say(text)
     speech.runAndWait()
-
-
-
-# speech_to_text()
-# text_to_speech("I recommend 'zizzi cambridge', it is an expensive Italian restaurant in the south of town.")
