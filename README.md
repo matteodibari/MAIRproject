@@ -1,9 +1,24 @@
 # MAIR project
 
-This project implements a dialog system for restaurant recommendations. It uses a database of restaurants and it is based on a Feed Forward Model that is capable of recognising the dialog act relative to the user input.
+This project implements a dialog system for restaurant recommendations. It uses a database of restaurants and it is based on a Feed Forward Model that is capable of recognising the dialog acts relative to the user input.
 
 ## How tho run it?
-To open the dialog system it is necessary to run the main.py file, which will start the chatbot. 
+Before running the code, you need to install some python libraries to ensure the program works properly, you can use pip command to install these:
+```
+pip install numpy
+pip install keras
+pip install scikit-learn
+pip install pyenchant
+pip install pyttsx3
+pip install pyaudio
+pip install pocketsphinx
+pip install SpeechRecognition
+```
+To open the dialog system it is necessary to run the main.py file, which needs you to run the following command:
+```
+python main.py
+```
+then the chatbot will start. 
 
 ## How to use?
 You are first asked to add customizations to the system. Typing no will set the chatbot to use the default settings. 
@@ -13,6 +28,7 @@ Then the chatbot will start with a welcome utterance, you will then be able to r
 After the first informations are given the system will ask for any additional requirements. The available options are: assigned seats, romantic, children allowed and touristic.
 Finally it will find a valid suggestion from the database, from which you can stop the chatbot simply saying 'bye' or you can modify your preferences and search for other options.
 
+## Contents
 ### baseline_1.py
 This file implements a system that, given an input utterance, returns the label 'inform', which is the majority class of the used dataset.
 
