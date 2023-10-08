@@ -37,12 +37,27 @@ def add_customisations():
     This function takes user input and modifies parameters for the Levenshtein edit distance
     and the order in which restaurants are chosen.
     """
+<<<<<<< HEAD
     global random_output
     global levenshtein_precision
     customiseInput = input("Do you want to add customizations to the system?\n")
     if customiseInput == 'yes':
         random_output = input("Do you want the preferences to be in random order?")
         distancePrecision = input("What degree of precision would you like for the Levenshtein disance: low, medium or high?")
+=======
+    global randomOutput
+    global levenshteinPrecision
+    print("Do you want to add customizations to the system?")
+    text_to_speech("Do you want to add customizations to the system?")
+    customiseInput = input()
+    if customiseInput == 'yes':
+        print("Do you want the preferences to be in random order?")
+        text_to_speech("Do you want the preferences to be in random order?")
+        randomOutput = input()
+        print("What degree of precision do you want about the Levenshtein distance: low, medium or high?")
+        text_to_speech("What degree of precision do you want about the Levenshtein distance: low, medium or high?")
+        distancePrecision = input()
+>>>>>>> ychen
         if distancePrecision == 'low':
             levenshtein_precision = 2
         if distancePrecision == 'high':
