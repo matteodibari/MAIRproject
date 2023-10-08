@@ -2,6 +2,7 @@ import keras
 import numpy as np
 import collections
 from sklearn import model_selection
+from keras import backend as K
 
 words = None
 
@@ -151,6 +152,32 @@ def get_data(without_duplicates=False):
     x_train, x_test, y_train, y_test = model_selection.train_test_split(array[:,1], array[:,0], test_size=0.15, random_state=42)
     return x_train, x_test, y_train, y_test
 
+def recall_m(y_true, y_pred):
+    """
+    Function to compute recall.
+
+    :param y_true: true labels.
+    :param y_pred: predicted labels.
+    :return recall: computed recall.
+    """
+    true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
+    possible_positives = K.sum(K.round(K.clip(y_true, 0, 1)))
+    recall = true_positives / (possible_positives + K.epsilon())
+    return recall
+
+def precision_m(y_true, y_pred):
+    """
+    Function to compute precision.
+
+    :param y_true: true labels.
+    :param y_pred: predicted labels.
+    :return precision: computed precision.
+    """
+    true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
+    predicted_positives = K.sum(K.round(K.clip(y_pred, 0, 1)))
+    precision = true_positives / (predicted_positives + K.epsilon())
+    return precision
+
 def train_model(without_duplicates=False):
     """
     This function uses the data and the bag of words to train and subsequently test 
@@ -179,7 +206,7 @@ def train_model(without_duplicates=False):
     model.add(keras.layers.Dense(256, input_shape=(len(words),)))
     model.add(keras.layers.Dense(512, activation='relu'))
     model.add(keras.layers.Dense(15, activation='softmax'))
-    model.compile(loss='categorical_crossentropy', optimizer=keras.optimizers.Adam(), metrics='accuracy')
+    model.compile(loss='categorical_crossentropy', optimizer=keras.optimizers.Adam(), metrics=['acc',precision_m, recall_m])
 
     history = model.fit(x_train_vectors, y_train_vectors, batch_size=128, epochs=22, verbose=1, validation_split=0.2)
     

@@ -51,7 +51,7 @@ def get_user_pref(sentence, precision):
 
     :param sentence: sentence to use for the keyword matching.
     :param precision: precision of the Levenshtein edit distance.
-    :return: list with preferences for price, location and food.
+    :return all_pref: list with preferences for price, location and food.
     """
     sentence = sentence.replace(" ", "")
     sentence = sentence.lower()
@@ -79,7 +79,7 @@ def get_user_request(sentence, precision):
 
     :param sentence: the sentence in which we will search preferences.
     :param precision: precision of the Levenshtein edit distance.
-    :return: list with requests for phone, address and post code.
+    :return all_pref: list with requests for phone, address and post code.
     """
     sentence = sentence.replace(" ", "")
     sentence = sentence.lower()
@@ -92,7 +92,7 @@ def get_user_request(sentence, precision):
     return all_pref
 
 
-def recommend(all_pref, already_recommended, randomOutput, all=False):
+def recommend(all_pref, already_recommended, random_output, all=False):
     """
     The function finds the best possible restaurant, based on the preferences of the user
     and the additional preferences that are asked separately. First, the function finds the
@@ -103,7 +103,7 @@ def recommend(all_pref, already_recommended, randomOutput, all=False):
     :param already_recommended: list with all already recommended restaurants.
     :param randomOutput: parameter for listing restaurants in random order.
     :param all: if this param is true the function returns a list of all the possible restaurants.
-    :return restaurant: the whole line of the database relative to the recommended restaurant.
+    :return all_restaurants: the whole line of the database relative to the recommended restaurant.
     """
 
     possible_restaurants, additional_request = recommend_additional_info()
@@ -128,24 +128,17 @@ def recommend(all_pref, already_recommended, randomOutput, all=False):
                 if possible_restaurants is None:
                     possible_restaurants = row[0]
                 if row[0] in possible_restaurants:
-                    user_pref.append(row[0])
-                    # for i in range(3):
-                    #     if all_pref[i] == 'any':
-                    #         user_pref.append('any')
-                    #     elif all_pref[i] is None:
-                    #         user_pref.append("unknown")
-                    #     else:
-                    #         user_pref.append(row[i + 1])
+                    user_pref.append(row[0])    
                     user_pref.append(row[1])
                     user_pref.append(row[2])
                     user_pref.append(row[3])
                     user_pref.extend(row[4:10])
-                    if all == False and randomOutput != 'yes':
+                    if all == False and random_output != 'yes':
                         break
                 all_restaurants.append(row)
 
     if all == False:
-        if randomOutput == 'yes':
+        if random_output == 'yes':
             index = random.randint(0, len(all_restaurants) - 1)
             all_restaurants[index].append(additional_request)
             return all_restaurants[index]
@@ -178,10 +171,11 @@ def recommend_additional_info(precision=5):
     list of possible restaurants.
 
     :param precision: Precision of the Levenshtein edit distance.
-    :return: list of possible restaurants and users preferences.
+    :return possible_restaurants: List of possible restaurants.
+    :return userpref: Users preferences.
     """
 
-    sentence = input("Do you have additional requirements?\n")
+    sentence = input("Do you have any additional requirement? (You can pick from: assigned seats, romantic, children allowed and touristic)\n")
 
     if sentence == "No":
         return None, None
