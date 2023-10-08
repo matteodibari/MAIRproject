@@ -13,6 +13,13 @@ from user_pref import check_dont_care
 from text_speech import text_to_speech
 from text_speech import speech_to_text
 
+# Uncomment these 2 lines if you get this warning:
+# I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+# To enable the following instructions: SSE SSE2 SSE3 SSE4.1 SSE4.2 AVX AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+#
+# import os
+# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
 curr_state = 1
 
 input_type = None
