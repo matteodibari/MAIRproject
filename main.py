@@ -13,10 +13,7 @@ from user_pref import check_dont_care
 from text_speech import text_to_speech
 from text_speech import speech_to_text
 
-
-
 curr_state = 1
-#this variable keeps track of the current state during the state transitioning algorithm
 
 input_type = None
 #this variable is set in the first iteration of the loop. It will be 1 if the input is from keyboard, 2 if the input is from microphone
@@ -56,7 +53,6 @@ def get_user_input():
 
     if input_type == None:
         print('Set the way you want to input the messages. (Type 1 for keyboard input, 2 for voice input)')
-        #text_to_speech('Choose the way you want to input message. (Type 1 for keyboard input, 2 for voice input)')
         input_type = input()
         return
 
@@ -144,22 +140,23 @@ def predict_dialog_act(input_msg):
         data = f.read()
         words = data.split('\n')
 
-
-    #y = model.predict(np.array([sentence_to_vector_2('goodbye', words)]))
     y = model.predict( np.array( [sentence_to_vector_2(input_msg, words),] ), verbose=0)
     y = to_one_hot(y[0])
     return vector_to_label(y)
 
-#list of already recommended restaurant (list of arrays)
 already_recommended = []
 
 add_customisations()
-get_user_input() #this function call is just to set the type of input (keyboard or microphone)
+get_user_input() #this function call is used to set the type of input (keyboard or microphone)
 print('Hello , welcome to the Cambridge restaurant system? You can ask for restaurants by area , price range or food type . How may I help you?')
 text_to_speech('Hello , welcome to the Cambridge restaurant system? You can ask for restaurants by area , price range or food type . How may I help you?')
 
 while(1):
-    # user_input = input()
+    '''
+    This is the main process of the system, consisting in the state transitioning function. Its main component
+    is a python switch that based on the curr_state variable performs the relative actions (as modelled in the 
+    state diagram).
+    '''
     user_input = get_user_input()
     dialog_act = predict_dialog_act(user_input)
     print(dialog_act)
@@ -312,8 +309,6 @@ while(1):
                 else:
                     curr_state = 5
                     print_apologies()
-
-    # print(curr_state)
 
 
 
