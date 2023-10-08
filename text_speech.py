@@ -5,7 +5,7 @@ import speech_recognition as sr
 def speech_to_text():
     """
     This function implements the transformation from audio to text(speech recognition).
-    :return result: a recognized text.
+    :return text: a recognized text.
     """
     reco = sr.Recognizer()
 
