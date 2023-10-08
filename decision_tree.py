@@ -1,4 +1,3 @@
-# This is a sample Python script.
 import numpy as np
 import joblib as jl
 
@@ -12,10 +11,14 @@ from sklearn import metrics
 
 # process and split the data
 def data_process():
+    """
+    This function process the dataset by getting the info from dat file and dividing it in 85% for train set and 15% for test set.
+    """
     DatContent = []
+    # for i in open("dialog_acts_deduplicated.dat").readlines():
     for i in open("dialog_acts.dat").readlines():
         DatContent.append(i.strip().split())
-    # print(datContent)
+    
     np.random.shuffle(DatContent)
     features = [] # feature
     labels = [] # label
@@ -33,10 +36,14 @@ def data_process():
 
 # train and test the model DecisionTreeClassifier
 def train_test_DTC(train_features, test_features, train_labels, test_labels):
+    """
+    This function implements the building, training and testing of the model decision tree classifier using 
+    the method from sklearn library for python, at last printing the result of parameters about test.
+    """
+    # bag-of-words and one-hot encoder
     vectorizer = CountVectorizer()
     label_binarizer = MultiLabelBinarizer()
 
-    # print(feature_matrix)
 
     clf = DecisionTreeClassifier(criterion="gini", max_depth=256)
 
@@ -46,20 +53,13 @@ def train_test_DTC(train_features, test_features, train_labels, test_labels):
     train_feature_matrix = vectorizer.fit_transform(train_text_data)
     test_feature_matrix = vectorizer.transform(test_text_data)
 
-    # print(train_labels)
     train_labels = label_binarizer.fit_transform(train_labels)
     test_labels = label_binarizer.transform(test_labels)
 
-    # print(train_feature_matrix)
-    # print(train_labels)
-
     clf.fit(train_feature_matrix, train_labels)
 
-    # predict using test data
-    # train_accuracy = clf.score(train_feature_matrix, train_labels)
-    # test_accuracy = clf.score(test_feature_matrix, test_labels)
     pred = clf.predict(test_feature_matrix)
-    # evaluation?
+    # evaluation
     print(f"Test Accuracy: {metrics.accuracy_score(test_labels, pred)}")
     print(f"Test Precision: {metrics.precision_score(test_labels, pred, average='macro')}")
     print(f"Test Recall: {metrics.recall_score(test_labels, pred, average='macro')}")
@@ -69,6 +69,10 @@ def train_test_DTC(train_features, test_features, train_labels, test_labels):
 
 # predict using the model
 def predict_new(clf, vectorizer, label_binarizer):
+    """
+    This function uses the model clf which is trained and tested by the function train_test_DTC
+    to test it performance by predict the example given in function.
+    """
     new_message = ["hello hi man", "request can you tell me where is utrecht", "null lol"]
     features = []  # feature
     labels = []  # label
@@ -78,25 +82,25 @@ def predict_new(clf, vectorizer, label_binarizer):
         remain_m = ' '.join(messages[1:])
         labels.append(first_m)
         features.append(remain_m)
-    print(features)
 
     labels = np.reshape(labels, (-1, 1)).tolist()
-    print(labels)
 
     features_new_message = vectorizer.transform(features)
     labels_new_message = label_binarizer.transform(labels)
-    # print(features_new_message)
-    # print(labels_new_message)
+    
     pred_m = clf.predict(features_new_message)
-    print(pred_m)
+
     print(f"Predict accuracy: {metrics.accuracy_score(labels_new_message, pred_m)}")
 
 # export the pkl file
 def export_model(clf):
+    """
+    This function implents the saving and exporting of the trained DTC model.
+    """
     jl.dump(clf, 'DTC.pkl')
 
 
-train_features, test_features, train_labels, test_labels = data_process()
-clf, vectorizer, label_binarizer = train_test_DTC(train_features, test_features, train_labels, test_labels)
-predict_new(clf, vectorizer, label_binarizer)
+# train_features, test_features, train_labels, test_labels = data_process()
+# clf, vectorizer, label_binarizer = train_test_DTC(train_features, test_features, train_labels, test_labels)
+# predict_new(clf, vectorizer, label_binarizer)
 
