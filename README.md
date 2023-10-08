@@ -13,8 +13,6 @@ Then the chatbot will start with a welcome utterance, you will then be able to r
 After the first informations are given the system will ask for any additional requirements. The available options are: assigned seats, romantic, children allowed and touristic.
 Finally it will find a valid suggestion from the database, from which you can stop the chatbot simply saying 'bye' or you can modify your preferences and search for other options.
 
-## Dialog examples
-
 ### baseline_1.py
 This file implements a system that, given an input utterance, returns the label 'inform', which is the majority class of the used dataset.
 
