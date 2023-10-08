@@ -36,7 +36,7 @@ This file implements the functions used for the speech-to-text and text-to-speec
 ### user_pref.py
 This file implements the major functions of the system, such as the recommendation of a restaurant given the preferences or the keyword matching algorithm to find keywords in the user sentence (based on Levenshtein distance).
 
-## saved_model.h5
+### saved_model.h5
 This files contains the weights of a trained Feed Forward Model and can be loaded using keras method 'load_model()'
 
 
